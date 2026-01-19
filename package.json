@@ -1,0 +1,26 @@
+{
+  "name": "ruleport",
+  "version": "0.1.0",
+  "description": "Unified AI assistant rules syncing utility for directory-based rules",
+  "scripts": {
+    "sync": "node sync-rules-advanced.js",
+    "sync:watch": "node sync-rules-advanced.js --watch",
+    "validate": "node validate-setup-advanced.js",
+    "init": "node init-rules-structure.js",
+    "test": "node --test tests/**/*.test.js",
+    "test:unit": "node --test tests/unit/*.test.js",
+    "test:e2e": "node --test tests/e2e/*.test.js"
+  },
+  "keywords": [
+    "cursor",
+    "copilot",
+    "claude-code",
+    "antigravity",
+    "ai-rules"
+  ],
+  "dependencies": {
+    "yaml": "^2.3.4"
+  },
+  "author": "",
+  "license": "MIT"
+}
