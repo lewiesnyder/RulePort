@@ -34,12 +34,10 @@ function generateCopilotInstruction(rule: RuleIR): string {
  * Generate consolidated Copilot instructions file.
  */
 function generateConsolidatedCopilot(rules: RuleIR[]): string {
-    const timestamp = new Date().toISOString();
-
-    let output = `<!-- Auto-synced from .cursor/rules/ at ${timestamp} -->\n`;
+    let output = `<!-- Auto-synced from .cursor/rules/ -->\n`;
     output += `<!-- DO NOT EDIT - Edit .cursor/rules/*/RULE.md instead -->\n\n`;
     output += `# AI Assistant Rules\n\n`;
-    output += `This file consolidates all rules from cursor configuration\n\n`;
+    output += `This file consolidates all rules from cursor configuration.\n\n`;
     output += `---\n\n`;
 
     // Group rules by alwaysApply

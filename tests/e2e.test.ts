@@ -73,15 +73,8 @@ describe('E2E Sync Workflow', () => {
         // First sync
         execSync(`node ${cliPath} ${testDir}`, { encoding: 'utf8' });
 
-        // Check should pass (exit code 0)
-        try {
-            execSync(`node ${cliPath} check ${testDir}`, { encoding: 'utf8' });
-            // If we get here, check passed (no drift)
-            expect(true).toBe(true);
-        } catch (error: any) {
-            // Check failed (drift detected)
-            // This is expected if timestamps differ
-            expect(error.status).toBe(1);
-        }
+        // Check should pass (exit code 0) - no drift since timestamps removed
+        const output = execSync(`node ${cliPath} check ${testDir}`, { encoding: 'utf8' });
+        expect(output).toContain('All files are in sync');
     });
 });
