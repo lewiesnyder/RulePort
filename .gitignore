@@ -1,6 +1,23 @@
+# Generated output directories
 .agent
 .claude
 .github
+!.github/workflows
 .gemini
 
+# Dependencies
 node_modules
+
+# Build output
+dist
+
+# Test artifacts
+tests/temp_test_project
+coverage
+.vitest
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
