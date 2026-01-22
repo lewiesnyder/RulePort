@@ -1,0 +1,76 @@
+name: Release
+
+on:
+  push:
+    branches: ['**']
+
+jobs:
+  release:
+    name: Semantic Release
+    runs-on: ubuntu-latest
+    # Only run if CI passes (when on main) or for dry-run testing
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Determine if dry run
+        id: check-branch
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "dry_run=false" >> $GITHUB_OUTPUT
+            echo "Running REAL release on main branch"
+          else
+            echo "dry_run=true" >> $GITHUB_OUTPUT
+            echo "Running DRY RUN on branch: ${{ github.ref }}"
+          fi
+
+      - name: Conventional Changelog Action
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          git-message: 'chore(release): {version} [skip ci]'
+          version-file: './package.json,./package-lock.json'
+          skip-on-empty: 'true'
+          skip-version-file: ${{ steps.check-branch.outputs.dry_run }}
+          skip-commit: ${{ steps.check-branch.outputs.dry_run }}
+          skip-tag: ${{ steps.check-branch.outputs.dry_run }}
+          output-file: ${{ steps.check-branch.outputs.dry_run == 'true' && 'false' || 'CHANGELOG.md' }}
+
+      - name: Create GitHub Release
+        if: steps.changelog.outputs.skipped == 'false' && steps.check-branch.outputs.dry_run == 'false'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.changelog.outputs.tag }}
+          release_name: ${{ steps.changelog.outputs.tag }}
+          body: ${{ steps.changelog.outputs.clean_changelog }}
+
+      - name: Log dry run results
+        if: steps.check-branch.outputs.dry_run == 'true'
+        run: |
+          echo "🔍 DRY RUN RESULTS"
+          echo "=================="
+          echo "Would bump version: ${{ steps.changelog.outputs.skipped == 'false' }}"
+          echo "New version would be: ${{ steps.changelog.outputs.version }}"
+          echo "New tag would be: ${{ steps.changelog.outputs.tag }}"
+          echo ""
+          echo "Changelog preview:"
+          echo "${{ steps.changelog.outputs.clean_changelog }}"
+
+      - name: Log skipped release
+        if: steps.changelog.outputs.skipped == 'true'
+        run: |
+          echo "⏭️ Release skipped - no conventional commits found (feat, fix, or BREAKING CHANGE)"
