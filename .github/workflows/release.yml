@@ -4,6 +4,9 @@ on:
   push:
     branches: ['**']
 
+permissions:
+  contents: write
+
 jobs:
   release:
     name: Semantic Release
@@ -14,6 +17,11 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Git Configuration
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
