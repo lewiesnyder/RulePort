@@ -223,6 +223,41 @@ Run without building (uses `tsx`):
 npm run dev
 ```
 
+### Code Quality Tools
+
+**Linting**:
+```bash
+npm run lint      # Check code style
+npm run lint:fix  # Fix automatic issues
+```
+
+**Type Checking**:
+```bash
+npm run typecheck # Verify TypeScript types
+```
+
+**Pre-commit Hooks**:
+This project uses `husky` and `lint-staged`. On every commit, it automatically:
+- Fixes linting issues (`eslint --fix`)
+- Runs relevant tests (`vitest related`)
+- Blocks the commit if checks fail
+
+### Contribution Guidelines
+
+**Conventional Commits**:
+We use [Conventional Commits](https://www.conventionalcommits.org/) to automate versioning and changelogs.
+Please use one of the following types:
+- `feat`: A new feature (minor release)
+- `fix`: A bug fix (patch release)
+- `chore`: Maintenance, dependencies, etc. (no release)
+- `docs`: Documentation changes
+- `test`: Adding or correcting tests
+
+Example:
+```bash
+git commit -m "feat: add support for new target adapter"
+```
+
 ### Add a New Target Adapter
 
 1. Create `src/targets/your-target.ts`

@@ -4,7 +4,6 @@ import { loadCursorRules } from '../sources/cursor.js';
 import { renderCopilot } from '../targets/copilot.js';
 import { renderClaude } from '../targets/claude.js';
 import { renderAntigravity } from '../targets/antigravity.js';
-import { aggregateWrites } from '../core/planner.js';
 import { writeFileAtomic } from '../core/fs.js';
 import * as log from '../core/log.js';
 

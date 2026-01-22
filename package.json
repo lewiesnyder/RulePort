@@ -8,8 +8,11 @@
     "ruleport": "./dist/cli.js"
   },
   "scripts": {
-    "prepare": "npm run build",
+    "prepare": "husky",
     "build": "tsc",
+    "lint": "eslint src tests",
+    "lint:fix": "eslint src tests --fix",
+    "typecheck": "tsc --noEmit",
     "dev": "tsx src/cli.ts",
     "sync": "npm run build && node dist/cli.js",
     "sync:watch": "npm run build && node dist/cli.js --watch",
@@ -29,12 +32,24 @@
   "dependencies": {
     "yaml": "^2.3.4"
   },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "eslint --fix",
+      "vitest related --run"
+    ]
+  },
   "devDependencies": {
+    "@eslint/js": "^9.0.0",
     "@types/node": "^20.11.0",
     "@vitest/coverage-v8": "^1.6.1",
     "@vitest/ui": "^1.2.0",
+    "eslint": "^9.0.0",
+    "globals": "^15.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3",
+    "typescript-eslint": "^8.0.0",
     "vitest": "^1.2.0"
   },
   "author": "",
