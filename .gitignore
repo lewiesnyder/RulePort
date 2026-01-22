@@ -1,7 +1,7 @@
 # Generated output directories
 .agent
 .claude
-.github
+.github/*
 !.github/workflows
 .gemini
 
