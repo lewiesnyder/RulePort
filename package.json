@@ -2,14 +2,22 @@
   "name": "ruleport",
   "version": "0.1.0",
   "description": "Unified AI assistant rules syncing utility for directory-based rules",
+  "type": "module",
+  "main": "dist/cli.js",
+  "bin": {
+    "ruleport": "./dist/cli.js"
+  },
   "scripts": {
-    "sync": "node sync-rules-advanced.js",
-    "sync:watch": "node sync-rules-advanced.js --watch",
-    "validate": "node validate-setup-advanced.js",
-    "init": "node init-rules-structure.js",
-    "test": "node --test tests/**/*.test.js",
-    "test:unit": "node --test tests/unit/*.test.js",
-    "test:e2e": "node --test tests/e2e/*.test.js"
+    "prepare": "npm run build",
+    "build": "tsc",
+    "dev": "tsx src/cli.ts",
+    "sync": "npm run build && node dist/cli.js",
+    "sync:watch": "npm run build && node dist/cli.js --watch",
+    "check": "npm run build && node dist/cli.js check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage"
   },
   "keywords": [
     "cursor",
@@ -20,6 +28,14 @@
   ],
   "dependencies": {
     "yaml": "^2.3.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@vitest/coverage-v8": "^1.6.1",
+    "@vitest/ui": "^1.2.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
   },
   "author": "",
   "license": "MIT"

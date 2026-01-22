@@ -5,7 +5,16 @@ Manage your AI assistant rules in one place and sync them across all your tools.
 
 RulePort handles the translation and synchronization of context, coding standards, and project rules between different AI assistants. Instead of maintaining separate `.cursorrules`, `.github/copilot-instructions.md`, and `.claude/rules/` configs, you define them once and let this tool handle the rest.
 
-## 🔌 Supported Assistants
+## ✨ Features
+
+- � **Automatic Sync** - One-time or watch mode synchronization
+- 🎯 **Type-Safe** - Built with TypeScript for reliability
+- 🧪 **Tested** - Comprehensive test suite with 30+ tests
+- 🏗️ **Clean Architecture** - Adapter-based design for easy extensibility
+- ✅ **CI-Friendly** - Check command for validating sync status
+- 📦 **Zero Config** - Works out of the box with sensible defaults
+
+## �🔌 Supported Assistants
 
 | Source \ Target | Claude Code | Cursor | GitHub Copilot | Google Antigravity | Kiro | Windsurf |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -25,10 +34,9 @@ RulePort handles the translation and synchronization of context, coding standard
 npm install
 ```
 
-### 2. Initialize Rules
-If you don't have rules yet, create the structure:
+### 2. Build the Project
 ```bash
-npm run init
+npm run build
 ```
 
 ### 3. Sync to Assistants
@@ -37,44 +45,200 @@ Translate your rules to all configured targets:
 npm run sync
 ```
 
-## ⚙️ Options
+## 📖 Usage
 
-You can control the sync process using CLI arguments.
+### Commands
 
-### By Project Path
-Sync a specific project directory (useful for monorepos):
+#### `sync` - Synchronize Rules
+Sync rules from source to all targets:
 ```bash
-# Using npm
-npm run sync -- /path/to/project
-
-# Using node directly
-node sync-rules-advanced.js /path/to/project
+npm run sync
 ```
 
-### By Target
-Limit sync to specific assistants using the `--target` flag:
+Sync to specific targets:
 ```bash
-# Sync only to GitHub Copilot
 npm run sync -- --target copilot
-
-# Sync to Claude and Antigravity
 npm run sync -- --target claude --target antigravity
 ```
-*Available targets*: `copilot`, `claude`, `antigravity`
 
-### Source
-Currently, **Cursor** is the only supported source. The tool defaults to reading from `.cursor/rules/`.
+Sync a specific project directory:
 ```bash
-# Optional flag (defaults to cursor)
-npm run sync -- --source cursor
+npm run sync -- /path/to/project
 ```
 
-### Watch Mode
+#### `check` - Validate Sync Status (NEW)
+Check if generated files are in sync with source rules (useful for CI):
+```bash
+npm run check
+```
+
+This command:
+- Computes what files would be generated
+- Compares against existing files
+- Exits with code 1 if drift is detected
+- Exits with code 0 if everything is in sync
+
+Perfect for CI/CD pipelines to ensure rules are always synced!
+
+#### `watch` - Auto-Sync on Changes
 Automatically sync when you change rule files:
 ```bash
 npm run sync:watch
 ```
 
+Press `Ctrl+C` to stop watching.
+
+### Options
+
+#### `--target <name>`
+Limit sync to specific assistants:
+```bash
+npm run sync -- --target copilot
+```
+
+**Available targets**: `copilot`, `claude`, `antigravity`
+
+Default: All targets
+
+#### `--source <name>`
+Specify the source to read rules from:
+```bash
+npm run sync -- --source cursor
+```
+
+**Available sources**: `cursor`
+
+Default: `cursor`
+
+#### `--watch` / `-w`
+Enable watch mode:
+```bash
+npm run sync -- --watch
+# or
+npm run sync -- -w
+```
+
+#### `--help` / `-h`
+Display help information:
+```bash
+node dist/cli.js --help
+```
+
+## 🏗️ Architecture
+
+RulePort uses a clean adapter-based architecture:
+
+```
+Sources (Cursor, …)
+        │
+        ▼
+  ┌──────────┐
+  │  Rule IR │  ← canonical, typed, deterministic
+  └──────────┘
+        │
+        ▼
+Targets (Copilot, Claude, Antigravity, …)
+        │
+        ▼
+ Planned Writes (path + content)
+        │
+        ▼
+   sync / check / watch
+```
+
+### Key Principles
+
+- **IR-First**: All conversions go through a canonical Rule IR
+- **No Hidden Magic**: Deterministic output only
+- **Adapters, Not Conditionals**: Clean separation of concerns
+- **Local-First, CI-Friendly**: Works offline, validates in CI
+
+## 🧪 Testing
+
+Run the test suite:
+```bash
+npm test
+```
+
+Run tests in watch mode:
+```bash
+npm run test:watch
+```
+
+Run tests with coverage:
+```bash
+npm run test:coverage
+```
+
+View tests in UI:
+```bash
+npm run test:ui
+```
+
+## 📁 Project Structure
+
+```
+ruleport/
+├── src/                    # TypeScript source code
+│   ├── cli.ts             # Main CLI entry point
+│   ├── core/              # Core infrastructure
+│   │   ├── ir.ts          # Rule IR data model
+│   │   ├── frontmatter.ts # YAML parser
+│   │   ├── fs.ts          # File operations
+│   │   ├── log.ts         # Logging utilities
+│   │   └── planner.ts     # Write planning
+│   ├── config/            # Configuration
+│   │   ├── types.ts       # Type definitions
+│   │   └── defaults.ts    # Default values
+│   ├── sources/           # Source adapters
+│   │   └── cursor.ts      # Cursor rules reader
+│   ├── targets/           # Target adapters
+│   │   ├── copilot.ts     # GitHub Copilot
+│   │   ├── claude.ts      # Claude Code
+│   │   └── antigravity.ts # Google Antigravity
+│   └── commands/          # CLI commands
+│       ├── sync.ts        # Sync command
+│       ├── check.ts       # Check command
+│       └── watch.ts       # Watch command
+├── tests/                 # Test suite
+│   ├── cli.test.ts        # CLI tests
+│   ├── cursor.test.ts     # Source adapter tests
+│   ├── targets.test.ts    # Target adapter tests
+│   ├── e2e.test.ts        # End-to-end tests
+│   └── fixtures/          # Test fixtures
+├── dist/                  # Compiled JavaScript
+└── .cursor/rules/         # Your source rules
+```
+
+## 🔧 Development
+
+### Build
+```bash
+npm run build
+```
+
+### Development Mode
+Run without building (uses `tsx`):
+```bash
+npm run dev
+```
+
+### Add a New Target Adapter
+
+1. Create `src/targets/your-target.ts`
+2. Implement the `render` function that accepts `RuleIR[]` and returns `RenderResult`
+3. Add target to `VALID_TARGETS` in `src/config/defaults.ts`
+4. Update command routing in `src/commands/sync.ts`
+5. Add tests in `tests/targets.test.ts`
+
 ## 🤝 Contributing
 
 We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to get started, report bugs, or suggest features.
+
+## 📄 License
+
+MIT
+
+## 🙏 Acknowledgments
+
+Built with TypeScript, Vitest, and ❤️ for the AI coding community.
