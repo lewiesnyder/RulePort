@@ -197,10 +197,6 @@ function main(): void {
     }
 }
 
-// Run if executed directly
-// if (import.meta.url === `file://${process.argv[1]}`) {
-//     main();
-// }
 main();
 
 export { parseArgs, main };

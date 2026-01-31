@@ -8,12 +8,13 @@
     "ruleport": "./dist/cli.js"
   },
   "scripts": {
-    "prepare": "husky",
+    "prepare": "npm run build",
     "build": "tsc",
     "lint": "eslint src tests",
     "lint:fix": "eslint src tests --fix",
     "typecheck": "tsc --noEmit",
     "dev": "tsx src/cli.ts",
+    "dev:hooks": "husky",
     "sync": "npm run build && node dist/cli.js",
     "sync:watch": "npm run build && node dist/cli.js --watch",
     "check": "npm run build && node dist/cli.js check",
