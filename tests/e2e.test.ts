@@ -26,7 +26,7 @@ describe('E2E Sync Workflow', () => {
     it('runs sync command successfully', () => {
         const cliPath = path.resolve(__dirname, '../dist/cli.js');
 
-        const output = execSync(`node ${cliPath} ${testDir} --target antigravity`, {
+        const output = execSync(`node ${cliPath} ${testDir} --target antigravity --log-level info`, {
             encoding: 'utf8'
         });
 
@@ -37,7 +37,7 @@ describe('E2E Sync Workflow', () => {
 
     it('generates expected artifacts', () => {
         const cliPath = path.resolve(__dirname, '../dist/cli.js');
-        execSync(`node ${cliPath} ${testDir} --target antigravity`, { encoding: 'utf8' });
+        execSync(`node ${cliPath} ${testDir} --target antigravity --log-level info`, { encoding: 'utf8' });
 
         const agentRulesFile = path.join(testDir, '.agent', 'rules', 'test-rule.md');
         const geminiFile = path.join(testDir, '.gemini', 'GEMINI.md');
@@ -52,7 +52,7 @@ describe('E2E Sync Workflow', () => {
 
     it('syncs to all targets by default', () => {
         const cliPath = path.resolve(__dirname, '../dist/cli.js');
-        execSync(`node ${cliPath} ${testDir}`, { encoding: 'utf8' });
+        execSync(`node ${cliPath} ${testDir} --log-level info`, { encoding: 'utf8' });
 
         // Check Copilot files
         expect(fs.existsSync(path.join(testDir, '.github', 'instructions', 'test-rule.instructions.md'))).toBe(true);
@@ -71,10 +71,10 @@ describe('E2E Sync Workflow', () => {
         const cliPath = path.resolve(__dirname, '../dist/cli.js');
 
         // First sync
-        execSync(`node ${cliPath} ${testDir}`, { encoding: 'utf8' });
+        execSync(`node ${cliPath} ${testDir} --log-level info`, { encoding: 'utf8' });
 
         // Check should pass (exit code 0) - no drift since timestamps removed
-        const output = execSync(`node ${cliPath} check ${testDir}`, { encoding: 'utf8' });
+        const output = execSync(`node ${cliPath} check ${testDir} --log-level info`, { encoding: 'utf8' });
         expect(output).toContain('All files are in sync');
     });
 });
