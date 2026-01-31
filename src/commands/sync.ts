@@ -15,6 +15,7 @@ import * as log from '../core/log.js';
  */
 export function syncCommand(config: CLIConfig): void {
     const paths = getPaths(config.baseDir);
+    log.debug(`Paths: ${JSON.stringify(paths, null, 2)}`);
 
     log.info(`🔄 Syncing AI rules (Source: ${config.source})...\n`);
 
@@ -26,6 +27,8 @@ export function syncCommand(config: CLIConfig): void {
         log.error(`Error: ${error instanceof Error ? error.message : String(error)}`);
         process.exit(1);
     }
+
+    log.debug(`Loaded ${rules.length} rules from ${paths.rulesDir}`);
 
     if (rules.length === 0) {
         log.warn('No rules found in .cursor/rules/');
@@ -64,6 +67,7 @@ export function syncCommand(config: CLIConfig): void {
 
             // Write all files
             for (const write of result.writes) {
+                log.debug(`Writing file: ${write.path}`);
                 writeFileAtomic(write.path, write.content);
             }
 

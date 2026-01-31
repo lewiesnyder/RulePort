@@ -18,7 +18,16 @@ export interface CLIConfig {
 
     /** Whether to run in watch mode */
     isWatchMode: boolean;
+
+    /** Component logging level */
+    logLevel: LogLevel;
 }
+
+/**
+ * Available logging levels.
+ * Ordered by verbosity (ERROR is least verbose, TRACE is most).
+ */
+export type LogLevel = 'error' | 'warn' | 'info' | 'debug' | 'trace';
 
 /**
  * Path configuration for rules and targets.

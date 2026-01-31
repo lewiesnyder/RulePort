@@ -25,6 +25,11 @@ function isValidSource(source: string): source is 'cursor' {
     return source === 'cursor';
 }
 
+// Helper to check if a string is a valid log level
+function isValidLogLevel(level: string): level is import('./config/types.js').LogLevel {
+    return ['error', 'warn', 'info', 'debug', 'trace'].includes(level);
+}
+
 /**
  * Parse command-line arguments into CLI configuration.
  * Matches the behavior of the JavaScript version's parseArgs function.
@@ -64,6 +69,17 @@ function parseArgs(args: string[]): CLIConfig {
                 }
             } else {
                 throw new Error('--target requires a value');
+            }
+        } else if (arg === '--log-level') {
+            if (i + 1 < args.length) {
+                const level = args[++i];
+                if (isValidLogLevel(level)) {
+                    config.logLevel = level;
+                } else {
+                    throw new Error(`Invalid log level "${level}". Must be one of: error, warn, info, debug, trace`);
+                }
+            } else {
+                throw new Error('--log-level requires a value');
             }
         } else if (arg.startsWith('-')) {
             log.warn(`Warning: Unknown flag "${arg}" ignored.`);
@@ -123,6 +139,8 @@ Options:
   --target <name>       Target to sync to (can be specified multiple times)
                         Valid targets: copilot, claude, antigravity
                         Default: all targets
+  --log-level <level>   Set log level (error, warn, info, debug, trace)
+                        Default: warn
 
 Examples:
   ruleport                           # Sync all targets in current directory
@@ -130,6 +148,8 @@ Examples:
   ruleport --target copilot          # Sync only to GitHub Copilot
   ruleport --watch                   # Watch mode
   ruleport check                     # Check sync status (for CI)
+  ruleport --log-level debug         # Run with debug logging
+
 
 Legacy scripts:
   npm run legacy:sync                # Run original JavaScript version
@@ -160,6 +180,9 @@ function main(): void {
     try {
         const config = parseArgs(commandArgs);
 
+        // Initialize log level
+        log.setLogLevel(config.logLevel);
+
         // Route to appropriate command
         if (command === 'check') {
             checkCommand(config);
@@ -175,8 +198,9 @@ function main(): void {
 }
 
 // Run if executed directly
-if (import.meta.url === `file://${process.argv[1]}`) {
-    main();
-}
+// if (import.meta.url === `file://${process.argv[1]}`) {
+//     main();
+// }
+main();
 
 export { parseArgs, main };
