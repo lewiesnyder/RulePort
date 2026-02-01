@@ -203,6 +203,7 @@ Code MUST be structured into clear layers:
 ### XI.1 Predictable Logging
 
 * Logging MUST be structured and intentional
+* All functionality MUST be logged at appropriate severity levels (INFO, WARN, DEBUG, TRACE, ERROR)
 * Debug logs MUST be gated behind explicit flags
 
 ### XI.2 No Noisy Defaults

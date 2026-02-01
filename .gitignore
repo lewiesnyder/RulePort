@@ -10,6 +10,7 @@ node_modules
 
 # Build output
 dist
+*.tgz
 
 # Test artifacts
 tests/temp_test_project

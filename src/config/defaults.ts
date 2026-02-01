@@ -13,6 +13,7 @@ export function getDefaultConfig(): CLIConfig {
         source: 'cursor',
         targets: [],
         isWatchMode: false,
+        logLevel: 'warn',
     };
 }
 
