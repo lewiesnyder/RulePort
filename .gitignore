@@ -1,9 +1,9 @@
 # Generated output directories
-.agent
-.claude
-.github/*
-!.github/workflows
-.gemini
+# .agent
+# .claude
+# .github/*
+# !.github/workflows
+# .gemini
 
 # Dependencies
 node_modules
