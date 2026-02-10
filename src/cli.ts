@@ -2,7 +2,7 @@
 
 import * as path from 'path';
 import type { CLIConfig } from './config/types.js';
-import { getDefaultConfig, VALID_TARGETS } from './config/defaults.js';
+import { getDefaultConfig, VALID_TARGETS, VALID_SOURCES } from './config/defaults.js';
 import { syncCommand } from './commands/sync.js';
 import { checkCommand } from './commands/check.js';
 import { watchCommand } from './commands/watch.js';
@@ -21,8 +21,8 @@ function isValidTarget(target: string): target is typeof VALID_TARGETS[number] {
 }
 
 // Helper to check if a string is a valid source
-function isValidSource(source: string): source is 'cursor' {
-    return source === 'cursor';
+function isValidSource(source: string): source is typeof VALID_SOURCES[number] {
+    return (VALID_SOURCES as readonly string[]).includes(source);
 }
 
 // Helper to check if a string is a valid log level
@@ -51,9 +51,8 @@ function parseArgs(args: string[]): CLIConfig {
                 if (isValidSource(source)) {
                     config.source = source;
                 } else {
-                    // Start of change: Use explicit type assertion for invalid value to pass linting
-                    // Ideally we'd throw here or not assign, but maintaining existing logic of letting validation catch it later
-                    config.source = source as 'cursor';
+                    // Store the invalid value to let validation report a clear error later
+                    config.source = source as typeof VALID_SOURCES[number];
                 }
             } else {
                 throw new Error('--source requires a value');
@@ -101,8 +100,8 @@ function parseArgs(args: string[]): CLIConfig {
     }
 
     // Validation
-    if (config.source !== 'cursor') {
-        throw new Error(`Unsupported source "${config.source}". Only "cursor" is currently supported as a source.`);
+    if (!isValidSource(config.source)) {
+        throw new Error(`Invalid source "${config.source}". Valid sources: ${VALID_SOURCES.join(', ')}`);
     }
 
     if (config.targets.length === 0) {
@@ -136,8 +135,9 @@ Commands:
 Options:
   --watch, -w           Watch for changes and auto-sync
   --source <name>       Source to read from (default: cursor)
+                        Valid sources: cursor, claude, copilot, antigravity, kiro, windsurf
   --target <name>       Target to sync to (can be specified multiple times)
-                        Valid targets: copilot, claude, antigravity
+                        Valid targets: copilot, claude, antigravity, cursor, kiro, windsurf
                         Default: all targets
   --log-level <level>   Set log level (error, warn, info, debug, trace)
                         Default: warn

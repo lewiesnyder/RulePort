@@ -33,14 +33,27 @@ export type LogLevel = 'error' | 'warn' | 'info' | 'debug' | 'trace';
  * Path configuration for rules and targets.
  */
 export interface PathConfig {
-    /** Source rules directory */
+    /** Source rules directory (cursor, backward-compat alias) */
     rulesDir: string;
+
+    /** Source directories indexed by provider name */
+    sources: {
+        cursor: string;
+        claude: string;
+        copilot: string;
+        antigravity: string;
+        kiro: string;
+        windsurf: string;
+    };
 
     /** Target directories for individual rule files */
     targets: {
         copilot: string;
         claudeCode: string;
         antigravity: string;
+        cursor: string;
+        kiro: string;
+        windsurf: string;
     };
 
     /** Paths for consolidated files */

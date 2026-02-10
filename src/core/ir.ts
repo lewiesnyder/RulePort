@@ -6,8 +6,8 @@
  * consume this format.
  */
 
-export type RuleSource = "cursor";
-export type RuleTarget = "copilot" | "claude" | "antigravity";
+export type RuleSource = "cursor" | "claude" | "copilot" | "antigravity" | "kiro" | "windsurf";
+export type RuleTarget = "copilot" | "claude" | "antigravity" | "cursor" | "kiro" | "windsurf";
 
 /**
  * Intermediate representation of a rule.
