@@ -9,7 +9,7 @@ RulePort handles the translation and synchronization of context, coding standard
 
 - � **Automatic Sync** - One-time or watch mode synchronization
 - 🎯 **Type-Safe** - Built with TypeScript for reliability
-- 🧪 **Tested** - Comprehensive test suite with 30+ tests
+- 🧪 **Tested** - Comprehensive test suite with 87+ tests
 - 🏗️ **Clean Architecture** - Adapter-based design for easy extensibility
 - ✅ **CI-Friendly** - Check command for validating sync status
 - 📦 **Zero Config** - Works out of the box with sensible defaults
@@ -18,14 +18,14 @@ RulePort handles the translation and synchronization of context, coding standard
 
 | Source \ Target | Claude Code | Cursor | GitHub Copilot | Google Antigravity | Kiro | Windsurf |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Claude Code** | - | 🚧 | 🚧 | 🚧 | 🚧 | 🚧 |
-| **Cursor** | ✅ | - | ✅ | ✅ | 🚧 | 🚧 |
-| **GitHub Copilot** | 🚧 | 🚧 | - | 🚧 | 🚧 | 🚧 |
-| **Google Antigravity** | 🚧 | 🚧 | 🚧 | - | 🚧 | 🚧 |
-| **Kiro** | 🚧 | 🚧 | 🚧 | 🚧 | - | 🚧 |
-| **Windsurf** | 🚧 | 🚧 | 🚧 | 🚧 | 🚧 | - |
+| **Claude Code** | - | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Cursor** | ✅ | - | ✅ | ✅ | ✅ | ✅ |
+| **GitHub Copilot** | ✅ | ✅ | - | ✅ | ✅ | ✅ |
+| **Google Antigravity** | ✅ | ✅ | ✅ | - | ✅ | ✅ |
+| **Kiro** | ✅ | ✅ | ✅ | ✅ | - | ✅ |
+| **Windsurf** | ✅ | ✅ | ✅ | ✅ | ✅ | - |
 
-> ✅ = Available Now | 🚧 = Coming Soon | - = N/A
+> ✅ = Available Now | - = N/A
 
 ## 🚀 Quick Start
 
@@ -96,7 +96,7 @@ Limit sync to specific assistants:
 npm run sync -- --target copilot
 ```
 
-**Available targets**: `copilot`, `claude`, `antigravity`
+**Available targets**: `copilot`, `claude`, `antigravity`, `cursor`, `kiro`, `windsurf`
 
 Default: All targets
 
@@ -104,9 +104,11 @@ Default: All targets
 Specify the source to read rules from:
 ```bash
 npm run sync -- --source cursor
+npm run sync -- --source claude
+npm run sync -- --source kiro
 ```
 
-**Available sources**: `cursor`
+**Available sources**: `cursor`, `claude`, `copilot`, `antigravity`, `kiro`, `windsurf`
 
 Default: `cursor`
 
@@ -191,18 +193,27 @@ ruleport/
 │   │   ├── types.ts       # Type definitions
 │   │   └── defaults.ts    # Default values
 │   ├── sources/           # Source adapters
-│   │   └── cursor.ts      # Cursor rules reader
+│   │   ├── cursor.ts      # Cursor rules reader
+│   │   ├── claude.ts      # Claude Code reader
+│   │   ├── copilot.ts     # GitHub Copilot reader
+│   │   ├── antigravity.ts # Google Antigravity reader
+│   │   ├── kiro.ts        # Kiro reader
+│   │   └── windsurf.ts    # Windsurf reader
 │   ├── targets/           # Target adapters
 │   │   ├── copilot.ts     # GitHub Copilot
 │   │   ├── claude.ts      # Claude Code
-│   │   └── antigravity.ts # Google Antigravity
+│   │   ├── antigravity.ts # Google Antigravity
+│   │   ├── cursor.ts      # Cursor
+│   │   ├── kiro.ts        # Kiro
+│   │   └── windsurf.ts    # Windsurf
 │   └── commands/          # CLI commands
 │       ├── sync.ts        # Sync command
 │       ├── check.ts       # Check command
 │       └── watch.ts       # Watch command
 ├── tests/                 # Test suite
 │   ├── cli.test.ts        # CLI tests
-│   ├── cursor.test.ts     # Source adapter tests
+│   ├── cursor.test.ts     # Cursor source adapter tests
+│   ├── sources.test.ts    # All other source adapter tests
 │   ├── targets.test.ts    # Target adapter tests
 │   ├── e2e.test.ts        # End-to-end tests
 │   └── fixtures/          # Test fixtures

@@ -55,7 +55,7 @@ export function isDirectory(dirPath: string): boolean {
 
 /**
  * Read all subdirectories in a directory.
- * 
+ *
  * @param dirPath - Directory to read
  * @returns Array of subdirectory names
  */
@@ -67,5 +67,22 @@ export function readSubdirectories(dirPath: string): string[] {
     return fs.readdirSync(dirPath).filter(name => {
         const fullPath = path.join(dirPath, name);
         return isDirectory(fullPath);
+    });
+}
+
+/**
+ * Read all filenames in a directory (non-recursive, files only).
+ *
+ * @param dirPath - Directory to read
+ * @returns Array of filenames (not full paths)
+ */
+export function readFiles(dirPath: string): string[] {
+    if (!fs.existsSync(dirPath)) {
+        return [];
+    }
+
+    return fs.readdirSync(dirPath).filter(name => {
+        const fullPath = path.join(dirPath, name);
+        return !isDirectory(fullPath);
     });
 }
